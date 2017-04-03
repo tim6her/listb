@@ -9,6 +9,8 @@ from bs4 import BeautifulSoup
 import requests
 from os.path import join
 
+import normalizeTeX as norm
+
 def get_mrnumber(doc):
     mrnumber = doc.find(attrs={'class': 'mrnum'}).strong.string
     grp = get_mrnumber.PAT.match(mrnumber)
@@ -108,6 +110,8 @@ if __name__ == '__main__':
     for doc in ddocs:
         bibentry = bib_dict['MR%s' % doc['mrnumber']]
         doc.update(bibentry)
+        doc.update({'normtitle': norm.norm_title(doc),
+                    'normauthor': norm.norm_authors(doc)})
     with open(join('files', 'msn.yaml'), 'w') as msn:
         yaml.dump(ddocs, msn,
                   default_flow_style=False,
