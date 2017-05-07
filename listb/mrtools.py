@@ -15,37 +15,42 @@ import bibtexparser as bibtex
 import listb.normalizeTeX as norm
 
 def get_mrnumber(doc):
+    """ Extracts MR-number from the "headlineText" of the search result
+    
+    Args:
+        doc (bs4.element.Tag): headlineText
+    
+    Returns:
+        str: MR-number
+    """
     mrnumber = doc.find(class_='mrnum').strong.string
     grp = get_mrnumber.PAT.match(mrnumber)
-    try:
-        return grp[1]
-    except TypeError:
-        return
+    return grp[1]
 get_mrnumber.PAT = re.compile(r'MR(\d+)', re.IGNORECASE)
-    
-
-def get_article_link(doc):
-    menu = doc.find('div', class_='headlineMenu')
-    if menu:
-        article = doc.find('a', string='Article')
-        if article:
-            return get_article_link.PAT.split(article['href'], maxsplit=1)[-1]
-    return None
-get_article_link.PAT = re.compile(r'=')
 
 def msn_to_mrnumbers(msn, outfile=None):
-
+    """ Retrieves MR-numbers from the source code of a search page
+    
+    Args:
+        msn (str OR file handle): source code of the search result
+        outfile Optional[str]:
+            if specified the MR-numbers get written to a yaml file located at
+            the path
+    
+    Returns:
+        List[str]: List of MR-numbers found on page
+    """
     msn_soup = BeautifulSoup(msn, 'html.parser')
 
     docs = msn_soup.find_all('div', class_='headlineText')
-    ddocs = [get_mrnumber(doc) for doc in docs]
-    
+    mrnumbers = [get_mrnumber(doc) for doc in docs]
+
     if outfile:
-        with open(outfile, 'w') as msn:
-            yaml.dump(ddocs, msn,
+        with open(outfile, 'w') as mr:
+            yaml.dump(mrnumbers, mr,
                       default_flow_style=False,
                       allow_unicode=True)
-    return ddocs
+    return mrnumbers
 
 def get_bibtex_from_msn(mrnumbers, outfile=None):
     params = dict(
@@ -103,7 +108,7 @@ def crawl(url):
         url (str): URL pointing to a search page on MathSciNet
     
     Returns:
-        ([str], [str]): List of page source codes and list of URLs
+        (List[str], List[str]): List of page source codes and list of URLs
     """
     sites = []
     urls = [url]
@@ -124,11 +129,11 @@ if __name__ == '__main__':
     sites, _ = crawl('http://www.ams.org/mathscinet/search/publications.html?batch_title=Selected+Matches+for%3A+Author%3D%28Shelah%29&pg7=ALLF&yrop=eq&s8=All&pg4=AUCN&co7=AND&co5=AND&s6=&s5=&co4=AND&pg5=TI&co6=AND&pg6=PC&s4=Shelah&dr=all&arg3=&yearRangeFirst=&pg8=ET&s7=&review_format=html&yearRangeSecond=&fmt=doc&sort=newest&searchin=&agg_author_160185=160185')
     
     ddocs = []
-    for site in sites:
-        ddocs += msn_to_mrnumbers('publications.html',
+    for i, site in enumerate(sites):
+        print(i)
+        ddocs += msn_to_mrnumbers(site,
                      join('files', 'mrnumbers.yaml'))
-    mrnumbers = [d['mrnumber'] for d in ddocs]
-    mrnumbers = filter(lambda x: x, mrnumbers)
+    """
     
     bib = get_bibtex_from_msn(mrnumbers,
                               join('files', 'msn.bib'))
@@ -144,3 +149,4 @@ if __name__ == '__main__':
         yaml.dump(ddocs, msn,
                   default_flow_style=False,
                   allow_unicode=True)
+    """
