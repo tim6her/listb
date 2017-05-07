@@ -6,13 +6,13 @@ TODO:
 """
 from os.path import join
 import re
+import requests
 import yaml
 
-import bibtexparser as bibtex
 from bs4 import BeautifulSoup
-import requests
+import bibtexparser as bibtex
 
-import normalizeTeX as norm
+import listb.normalizeTeX as norm
 
 def get_mrnumber(doc):
     mrnumber = doc.find(class_='mrnum').strong.string
@@ -104,7 +104,20 @@ def get_bibtex_from_msn(mrnumbers, outfile=None):
     return bib
 
 def crawl(url):
+    """ Crawls specified URL on MathSciNet
+    
+    If the search result is split into 5 pages and the URL to page
+    3 is passed then the source codes and URLs of pages 3, 4, and 5
+    are returned.
+    
+    Args:
+        url (str): URL pointing to a search page on MathSciNet
+    
+    Returns:
+        ([str], [str]): List of page source codes and list of URLs
+    """
     sites = []
+    urls = [url]
     while True:
         req = requests.get(url)
         site = req.text
@@ -113,11 +126,13 @@ def crawl(url):
         a = soup.find('a', string='Next')
         if not a:
             break
+        urls.append(a['href'])
+        # Links on MathSciNet are relative
         url = 'http://www.ams.org/%s' % a['href']
-    return sites
+    return sites, urls
 
 if __name__ == '__main__':
-    sites = crawl('http://www.ams.org/mathscinet/search/publications.html?batch_title=Selected+Matches+for%3A+Author%3D%28Shelah%29&pg7=ALLF&yrop=eq&s8=All&pg4=AUCN&co7=AND&co5=AND&s6=&s5=&co4=AND&pg5=TI&co6=AND&pg6=PC&s4=Shelah&dr=all&arg3=&yearRangeFirst=&pg8=ET&s7=&review_format=html&yearRangeSecond=&fmt=doc&sort=newest&searchin=&agg_author_160185=160185')
+    sites, _ = crawl('http://www.ams.org/mathscinet/search/publications.html?batch_title=Selected+Matches+for%3A+Author%3D%28Shelah%29&pg7=ALLF&yrop=eq&s8=All&pg4=AUCN&co7=AND&co5=AND&s6=&s5=&co4=AND&pg5=TI&co6=AND&pg6=PC&s4=Shelah&dr=all&arg3=&yearRangeFirst=&pg8=ET&s7=&review_format=html&yearRangeSecond=&fmt=doc&sort=newest&searchin=&agg_author_160185=160185')
     
     ddocs = []
     for site in sites:

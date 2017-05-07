@@ -1,4 +1,7 @@
 files/
+build/
+dist/
+listb.egg-info/
 old/
 __pycache__/
 *.bib
