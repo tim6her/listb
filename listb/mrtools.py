@@ -59,6 +59,32 @@ def msn_to_mrnumbers(msn, outfile=None):
     return mrnumbers
 
 def get_bibtex_from_msn(mrnumbers, outfile=None):
+    """ Fetches BibTeX file from MathSciNet server using the MR-numbers
+    
+    Args:
+        mrnumbers (List[str]):
+            the BibTeX entries for these MR-numbers are retrieved
+        outfile (Opitonal[str]): path to output file
+    
+    Returns:
+        str: BibTeX file as string
+    
+    Example:
+        >>> print(get_bibtex_from_msn(['0241312']))
+        @article {MR0241312,
+            AUTHOR = {Shelah, Saharon},
+             TITLE = {Note on a min-max problem of {L}eo {M}oser},
+           JOURNAL = {J. Combinatorial Theory},
+            VOLUME = {6},
+              YEAR = {1969},
+             PAGES = {298--300},
+           MRCLASS = {05.04},
+          MRNUMBER = {0241312},
+        MRREVIEWER = {G. F. Clements},
+        }
+        
+        
+    """
     params = dict(
         bdl="",
         batch_title="Selected+Matches+for%3A+Author%3D%28Shelah%29",
@@ -132,13 +158,8 @@ def crawl(url):
     return sites, urls
 
 if __name__ == '__main__':
-    sites, _ = crawl('http://www.ams.org/mathscinet/search/publications.html?batch_title=Selected+Matches+for%3A+Author%3D%28Shelah%29&pg7=ALLF&yrop=eq&s8=All&pg4=AUCN&co7=AND&co5=AND&s6=&s5=&co4=AND&pg5=TI&co6=AND&pg6=PC&s4=Shelah&dr=all&arg3=&yearRangeFirst=&pg8=ET&s7=&review_format=html&yearRangeSecond=&fmt=doc&sort=newest&searchin=&agg_author_160185=160185')
-    
-    ddocs = []
-    for i, site in enumerate(sites):
-        print(i)
-        ddocs += msn_to_mrnumbers(site,
-                     join('files', 'mrnumbers.yaml'))
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
     """
     
     bib = get_bibtex_from_msn(mrnumbers,
