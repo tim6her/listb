@@ -33,23 +33,12 @@ def get_article_link(doc):
     return None
 get_article_link.PAT = re.compile(r'=')
 
-def msn_to_mrnumbers(infile, outfile=None):
-    with open(infile, 'r') as mathscinet:
-        msn = mathscinet.read()
+def msn_to_mrnumbers(msn, outfile=None):
 
     msn_soup = BeautifulSoup(msn, 'html.parser')
 
     docs = msn_soup.find_all('div', class_='headlineText')
-
-    ddocs = []
-    d = {}
-    for doc in docs:
-    
-        d['mrnumber'] = get_mrnumber(doc)
-        d['msnarticle'] = get_article_link(doc)
-        d = {k: str(v) for k, v in d.items()}
-        ddocs.append(d)
-        d = {}
+    ddocs = [get_mrnumber(doc) for doc in docs]
     
     if outfile:
         with open(outfile, 'w') as msn:
