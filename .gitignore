@@ -4,3 +4,4 @@ __pycache__/
 *.bib
 *.html
 *.pyc
+.DS_Store
