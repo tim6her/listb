@@ -14,6 +14,12 @@ import bibtexparser as bibtex
 
 import listb.normalizeTeX as norm
 
+def yaml_dump(data, path):
+    with open(path, 'w') as fout:
+        yaml.dump(data, fout,
+                  default_flow_style=False,
+                  allow_unicode=True)
+
 def get_mrnumber(doc):
     """ Extracts MR-number from the "headlineText" of the search result
     
@@ -46,10 +52,7 @@ def msn_to_mrnumbers(msn, outfile=None):
     mrnumbers = [get_mrnumber(doc) for doc in docs]
 
     if outfile:
-        with open(outfile, 'w') as mr:
-            yaml.dump(mrnumbers, mr,
-                      default_flow_style=False,
-                      allow_unicode=True)
+        yaml_dump(mrnumbers, outfile)
     return mrnumbers
 
 def get_bibtex_from_msn(mrnumbers, outfile=None):

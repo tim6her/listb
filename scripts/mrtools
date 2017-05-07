@@ -30,10 +30,24 @@ def crawl(url):
 @click.option('--url',
               prompt='Please enter URL',
               help='URL pointing to MathSciNet search result')
-def mrnumbers(url):
-    req = requests.get(url)
-    msn = req.text
-    mmrn = mrtools.msn_to_mrnumbers(msn)
+@click.option('--crawl/--no-crawl',
+              default=False,
+              help='Crawl page and return all MR-numbers')
+@click.option('--yaml',
+              help='path to yaml file for output')
+def mrnumbers(url, crawl, yaml):
+    if crawl:
+        sites, _ = mrtools.crawl(url)
+    else:
+        req = requests.get(url)
+        sites = [req.text]
+    
+    mmrn = [mrtools.msn_to_mrnumbers(s) for s in sites]
+    mmrn = [n for sublist in mmrn for n in sublist]
+    
+    if yaml:
+        mrtools.yaml_dump(mmrn, yaml)
+    
     click.echo('\n'.join(mmrn))
 
 cli.add_command(crawl)
