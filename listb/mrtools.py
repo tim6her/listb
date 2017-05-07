@@ -16,7 +16,10 @@ import listb.normalizeTeX as norm
 
 def yaml_dump(data, path):
     with open(path, 'w') as fout:
-        yaml.dump(data, fout,
+        yaml_dumps(data, fout)
+
+def yaml_dumps(data, handle):
+    yaml.dump(data, handle,
                   default_flow_style=False,
                   allow_unicode=True)
 
