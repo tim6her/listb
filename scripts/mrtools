@@ -72,17 +72,20 @@ def mrnumbers(url, crawl, dump):
     
     if dump:
         mrtools.yaml_dumps(mmrn, dump)
-    
-    click.echo('\n'.join(mmrn))
+    else:
+        click.echo('\n'.join(mmrn))
 
 @click.command('bib',
                 short_help='Retrieves BibTeX file for MR-numbers')
 @click.option('--load',
                type=click.File('r'),
                help='path to yaml file storing the MR-numbers')
+@click.option('--dump',
+              type=click.File('w'),
+              help='Path to BibTeX file for output')
 @click.argument('mrnumbers',
                 nargs=-1)
-def bib(load, mrnumbers):
+def bib(load, dump, mrnumbers):
     """ Fetches BibTeX entries for MR-numbers from MathSciNet.
     
     If both `--load` and `mrnumbers` are specified, only the numbers
@@ -97,8 +100,13 @@ def bib(load, mrnumbers):
         return
     
     chunks = chunk_list(mrnumbers, 20)
-    bibs = [mrtools.get_bibtex_from_msn(c) for c in chunks]
-    click.echo('\n'.join(bibs))
+    with click.progressbar(chunks) as bar:
+        bibs = [mrtools.get_bibtex_from_msn(c) for c in bar]
+    
+    if dump:
+        dump.write('\n'.join(bibs))
+    else:
+        click.echo('\n'.join(bibs))
 
 cli.add_command(crawl)
 cli.add_command(mrnumbers)
