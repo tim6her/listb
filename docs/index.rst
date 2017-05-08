@@ -7,12 +7,23 @@ Welcome to listb's documentation!
 =================================
 
 Contents:
+---------
+
+Scripts:
 
 .. toctree::
    :maxdepth: 2
+   :glob:
    
-   mrtools
-   normalizetex
+   scripts/*
+
+Modules:
+
+.. toctree::
+   :maxdepth: 2
+   :glob:
+   
+   modules/*
 
 
 
