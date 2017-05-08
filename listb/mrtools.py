@@ -1,36 +1,51 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+""" mrtools
+ ==========
+
+Python functions for accessing search results from MathSciNet and downloading
+BibTeX bibliographies associated to the results
 """
-TODO:
-* book or chapter
-"""
-from os.path import join
+
 import re
 import requests
 import yaml
 
 from bs4 import BeautifulSoup
-import bibtexparser as bibtex
-
-import listb.normalizeTeX as norm
 
 def yaml_dump(data, path):
+    """ Dumps data into yaml file at `path`
+
+    Args:
+        data (Dict[Any], etc.): data to be dumped
+        path (str): path to yaml file
+    """
     with open(path, 'w') as fout:
         yaml_dumps(data, fout)
 
 def yaml_dumps(data, handle):
+    """ Dumps data into handle
+
+    Args:
+        data (Dict[Any], etc.): data to be dumped
+        handle (handle): handle the data should be dumped into
+    """
     yaml.dump(data, handle,
-                  default_flow_style=False,
-                  allow_unicode=True)
+              default_flow_style=False,
+              allow_unicode=True)
 
 def get_mrnumber(doc):
     """ Extracts MR-number from the "headlineText" of the search result
-    
+
     Args:
         doc (bs4.element.Tag): headlineText
-    
+
     Returns:
         str: MR-number
+    
+    Attributes:
+        PAT (_sre.SRE_Pattern): precompiled pattern for extracting the
+            MR-number
     """
     mrnumber = doc.find(class_='mrnum').strong.string
     grp = get_mrnumber.PAT.match(mrnumber)
@@ -39,13 +54,13 @@ get_mrnumber.PAT = re.compile(r'MR(\d+)', re.IGNORECASE)
 
 def msn_to_mrnumbers(msn, outfile=None):
     """ Retrieves MR-numbers from the source code of a search page
-    
+
     Args:
         msn (str OR file handle): source code of the search result
         outfile Optional[str]:
             if specified the MR-numbers get written to a yaml file located at
             the path
-    
+
     Returns:
         List[str]: List of MR-numbers found on page
     """
@@ -60,15 +75,15 @@ def msn_to_mrnumbers(msn, outfile=None):
 
 def get_bibtex_from_msn(mrnumbers, outfile=None):
     """ Fetches BibTeX file from MathSciNet server using the MR-numbers
-    
+
     Args:
         mrnumbers (List[str]):
             the BibTeX entries for these MR-numbers are retrieved
         outfile (Opitonal[str]): path to output file
-    
+
     Returns:
         str: BibTeX file as string
-    
+
     Example:
         >>> print(get_bibtex_from_msn(['0241312']))
         @article {MR0241312,
@@ -82,8 +97,6 @@ def get_bibtex_from_msn(mrnumbers, outfile=None):
           MRNUMBER = {0241312},
         MRREVIEWER = {G. F. Clements},
         }
-        
-        
     """
     params = dict(
         bdl="",
@@ -125,23 +138,23 @@ def get_bibtex_from_msn(mrnumbers, outfile=None):
 
     entries = pre_bib.find_all('pre')
     bib = '\n'.join([str(e.string) for e in entries])
-    
+
     if outfile:
         with open(outfile, 'w') as msn_bib:
             msn_bib.write(bib)
-    
+
     return bib
 
 def crawl(url):
     """ Crawls specified URL on MathSciNet
-    
+
     If the search result is split into 5 pages and the URL to page
     3 is passed then the source codes and URLs of pages 3, 4, and 5
     are returned.
-    
+
     Args:
         url (str): URL pointing to a search page on MathSciNet
-    
+
     Returns:
         (List[str], List[str]): List of page source codes and list of URLs
     """
@@ -164,10 +177,10 @@ if __name__ == '__main__':
     import doctest
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
     """
-    
+
     bib = get_bibtex_from_msn(mrnumbers,
                               join('files', 'msn.bib'))
-    
+
     bibliography = bibtex.loads(bib)
     bib_dict = bibliography.get_entry_dict()
     for doc in ddocs:
