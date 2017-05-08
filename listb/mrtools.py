@@ -120,6 +120,9 @@ def get_bibtex_from_msn(mrnumbers, outfile=None):
     dirty_bib = req.text
     soup = BeautifulSoup(dirty_bib, 'html.parser')
     pre_bib = soup.find('div', class_='doc')
+    if not pre_bib:
+        return
+
     entries = pre_bib.find_all('pre')
     bib = '\n'.join([str(e.string) for e in entries])
     

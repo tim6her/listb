@@ -96,12 +96,18 @@ def bib(load, dump, mrnumbers):
     elif mrnumbers:
         pass
     else:
-        click.echo('Please specify yaml file or mrnumbers.')
-        return
+        raise click.UsageError('Please specify yaml file or mrnumbers.')
     
     chunks = chunk_list(mrnumbers, 20)
     with click.progressbar(chunks) as bar:
         bibs = [mrtools.get_bibtex_from_msn(c) for c in bar]
+    
+    if not all(bibs):
+        err_bibs = filter(lambda x: x[1] == None, enumerate(bibs))
+        err_chunks = [', '.join(chunks[i]) for i, _ in err_bibs]
+        raise click.BadParameter('There seems to be something wrong with '
+                                 'at least one of the following MR-numbers.'
+                                 '\n\n%s' % '\n'.join(err_chunks))
     
     if dump:
         dump.write('\n'.join(bibs))
