@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" normalizetex
- ===============
-
-Python functions for dealing with with dirty LaTeX ;)
+""" Python functions for dealing with with dirty LaTeX ;)
 """
 
 
@@ -20,7 +17,7 @@ def latex_to_ascii(tex):
         tex (str): LaTeX string
 
     Returns:
-        (str): unicode string containing only ascii characters
+        str: unicode string containing only ascii characters
 
     Examples:
         >>> latex_to_ascii("\^ile")
