@@ -63,6 +63,14 @@ def msn_to_mrnumbers(msn, outfile=None):
 
     Returns:
         List[str]: List of MR-numbers found on page
+    
+    Example:
+        >>> msn = '''<div class="headlineText">
+        ...            <a class="mrnum" title="Full MathSciNet Item"
+        ...             href="[...]"><strong>MR3549381</strong></a>
+        ...          </div>'''
+        >>> msn_to_mrnumbers(msn)
+        ['3549381']
     """
     msn_soup = BeautifulSoup(msn, 'html.parser')
 
@@ -83,6 +91,9 @@ def get_bibtex_from_msn(mrnumbers, outfile=None):
 
     Returns:
         str: BibTeX file as string
+
+    Note:
+        To use this fuction you need to have access to MathSciNet.
 
     Example:
         >>> print(get_bibtex_from_msn(['0241312']))
@@ -157,6 +168,9 @@ def crawl(url):
 
     Returns:
         (List[str], List[str]): List of page source codes and list of URLs
+
+    Note:
+        To use this fuction you need to have access to MathSciNet.
     """
     sites = []
     urls = [url]

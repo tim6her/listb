@@ -2,6 +2,7 @@ files/
 build/
 dist/
 listb.egg-info/
+.eggs/
 old/
 __pycache__/
 *.bib
