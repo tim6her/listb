@@ -105,7 +105,7 @@ def bib(load, dump, mrnumbers):
     if not all(bibs):
         err_bibs = filter(lambda x: x[1] == None, enumerate(bibs))
         err_chunks = [', '.join(chunks[i]) for i, _ in err_bibs]
-        raise click.BadParameter('There seems to be something wrong with '
+        raise click.UsageError('There seems to be something wrong with '
                                  'at least one of the following MR-numbers.'
                                  '\n\n%s' % '\n'.join(err_chunks))
     
