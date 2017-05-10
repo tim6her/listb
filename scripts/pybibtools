@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import os.path
+import requests
+import yaml
+
+import click
+import bibtexparser
+
+import listb.normalizetex as normalizetex
+
+READERS = {'bib': bibtexparser.load,
+           'yaml': yaml.load
+          }
+WRITERS = {'bib': bibtexparser.dumps,
+           'yaml': yaml.dump
+          }
+
+@click.command()
+@click.option('-f',
+              type=click.Choice(READERS.keys()),
+              help='from file format')
+@click.option('-t',
+              type=click.Choice(WRITERS.keys()),
+              help='to file format')
+@click.option('-o',
+              type=click.File('w'),
+              help='path to file for output')
+@click.argument('files', nargs=-1)
+def cli(f, t, o, files):
+    if not files:
+        raise UsageError('At least one file must be specified.')
+
+    if not f:
+        exts_f = [os.path.splitext(fil)[-1].replace('.', '') for fil in files]
+        ext_f = exts_f[0]
+        if not all(map(lambda x: x == ext_f, exts_f)):
+            raise click.UsageError('You did not explicitely specify a reader '
+                                   'and implicite deduction failed since not '
+                                   'all files share the same extension.')
+
+        if ext_f not in READERS:
+            raise click.UsageError('I implicitely deduced that you want to '
+                                   'use the %s reader. Unfortunately, this '
+                                   'reader is not supported. The available '
+                                   'readers are:\n%s' % (ext_f,
+                                                         ', '.join(READERS))
+                                   )
+        f = ext_f
+
+    if not t:
+        if not o:
+            raise click.UsageError('Cannot implicitely deduce writer. '
+                                   'specify writer "-t" or output file "-o".')
+
+        ext_t = os.path.splitext(str(o))[-1].replace('.', '')
+        if ext_t not in WRITERS:
+            raise click.UsageError('I implicitely deduced that you want to '
+                                   'use the %s writer. Unfortunately, this '
+                                   'writer is not supported. The available '
+                                   'writers are:\n%s' % (ext_f,
+                                                         ', '.join(WRITERS))
+                                   )
+        t = ext_t
+
+    click.echo(ext_f)
+
+
+if __name__ == '__main__':
+    cli()
