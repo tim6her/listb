@@ -33,6 +33,9 @@ def chunk_list(l, n):
 
 @click.group()
 def cli():
+    """ Small command line tool for crawling search pages on
+    MathSciNet, requesting MR-numbers and obtaining BibTex-databases
+    """
     pass
 
 @click.command('crawl',

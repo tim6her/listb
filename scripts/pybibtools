@@ -13,6 +13,14 @@ from bibtexparser.bibdatabase import BibDatabase
 import listb.normalizetex as normalizetex
 
 def _bibtex_dump(data):
+    """ Turns dict into BibTex string
+    
+    Args:
+        data (dict): data to be transformed
+    
+    Returns:
+        str: BibTex representation of dict data
+    """
     db = BibDatabase()
     db.entries = data
     writer = BibTexWriter()
@@ -25,12 +33,32 @@ READERS = {'bib': lambda fin: bibtexparser.load(fin).get_entry_list(),
 WRITERS = {'bib': _bibtex_dump,
            'yaml': yaml.dump
           }
-    
+
 def load(reader, fil):
+    """ Common interface for loading all readers
+    
+    Args:
+        reader (str):   name of reader
+        fil (str):      path to input file
+    
+    Returns:
+        (dict): dictionary holding data of input file
+    """
     with open(fil, 'r') as fin:
         return READERS[reader](fin)
 
 def _get_formats(f, t, o, files):
+    """ Chooses reader and writer based on user options
+    
+    Args:
+        f (str):            name of reader
+        t (str):            name of writer
+        o (click.File):     filehandle pointing to output file
+        files (List[str]):  paths to input files
+    
+    Returns:
+        (str, str): Name of reader and name of writer
+    """
     if not files:
         raise click.UsageError('At least one file must be specified.')
 
@@ -71,6 +99,9 @@ def _get_formats(f, t, o, files):
 
 @click.group()
 def cli():
+    """ Small command line tool for combining and converting
+    bibliographic data
+    """
     pass
 
 @click.command('append',
@@ -86,6 +117,8 @@ def cli():
               help='path to file for output')
 @click.argument('files', nargs=-1)
 def append(f, t, o, files):
+    """ Concatenates the bibliographies
+    """
     f, t = _get_formats(f, t, o, files)
     
     dump = WRITERS[t]
