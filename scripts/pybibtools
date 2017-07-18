@@ -30,20 +30,9 @@ def load(reader, fil):
     with open(fil, 'r') as fin:
         return READERS[reader](fin)
 
-@click.command()
-@click.option('-f',
-              type=click.Choice(READERS.keys()),
-              help='from file format')
-@click.option('-t',
-              type=click.Choice(WRITERS.keys()),
-              help='to file format')
-@click.option('-o',
-              type=click.File('w'),
-              help='path to file for output')
-@click.argument('files', nargs=-1)
-def cli(f, t, o, files):
+def _get_formats(f, t, o, files):
     if not files:
-        raise UsageError('At least one file must be specified.')
+        raise click.UsageError('At least one file must be specified.')
 
     if not f:
         exts_f = [os.path.splitext(fil)[-1].replace('.', '') for fil in files]
@@ -78,9 +67,31 @@ def cli(f, t, o, files):
                                    )
         t = ext_t
 
+    return f, t
+
+@click.group()
+def cli():
+    pass
+
+@click.command('append',
+               short_help='append multiple databases')
+@click.option('-f',
+              type=click.Choice(READERS.keys()),
+              help='from file format')
+@click.option('-t',
+              type=click.Choice(WRITERS.keys()),
+              help='to file format')
+@click.option('-o',
+              type=click.File('w'),
+              help='path to file for output')
+@click.argument('files', nargs=-1)
+def append(f, t, o, files):
+    f, t = _get_formats(f, t, o, files)
+    
     dump = WRITERS[t]
     
     data = [load(f, fin) for fin in files]
+    
     data = [x for sub in data for x in sub]
 
     datastring = dump(data)
@@ -89,6 +100,29 @@ def cli(f, t, o, files):
     else:
         click.echo(datastring)
 
+@click.command('merge',
+               short_help='merge databases')
+@click.option('-f',
+              type=click.Choice(READERS.keys()),
+              help='from file format')
+@click.option('-t',
+              type=click.Choice(WRITERS.keys()),
+              help='to file format')
+@click.option('-o',
+              type=click.File('w'),
+              help='path to file for output')
+@click.argument('files', nargs=-1)
+def merge(f, t, o, files):
+    f, t = _get_formats(f, t, o, files)
+    
+    dump = WRITERS[t]
+    
+    data = [load(f, fin) for fin in files]
+    
+    pass
+
+cli.add_command(append)
+cli.add_command(merge)
 
 if __name__ == '__main__':
     cli()
