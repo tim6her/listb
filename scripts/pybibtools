@@ -7,15 +7,28 @@ import yaml
 
 import click
 import bibtexparser
+from bibtexparser.bwriter import BibTexWriter
+from bibtexparser.bibdatabase import BibDatabase
 
 import listb.normalizetex as normalizetex
 
-READERS = {'bib': bibtexparser.load,
+def _bibtex_dump(data):
+    db = BibDatabase()
+    db.entries = data
+    writer = BibTexWriter()
+    indent = '  '
+    return writer.write(db)
+
+READERS = {'bib': lambda fin: bibtexparser.load(fin).get_entry_list(),
            'yaml': yaml.load
           }
-WRITERS = {'bib': bibtexparser.dumps,
+WRITERS = {'bib': _bibtex_dump,
            'yaml': yaml.dump
           }
+    
+def load(reader, fil):
+    with open(fil, 'r') as fin:
+        return READERS[reader](fin)
 
 @click.command()
 @click.option('-f',
@@ -40,7 +53,7 @@ def cli(f, t, o, files):
                                    'and implicite deduction failed since not '
                                    'all files share the same extension.')
 
-        if ext_f not in READERS:
+        if not ext_f in READERS:
             raise click.UsageError('I implicitely deduced that you want to '
                                    'use the %s reader. Unfortunately, this '
                                    'reader is not supported. The available '
@@ -54,17 +67,27 @@ def cli(f, t, o, files):
             raise click.UsageError('Cannot implicitely deduce writer. '
                                    'specify writer "-t" or output file "-o".')
 
-        ext_t = os.path.splitext(str(o))[-1].replace('.', '')
-        if ext_t not in WRITERS:
+        fn_o = o.name
+        ext_t = os.path.splitext(fn_o)[-1].replace('.', '')
+        if not ext_t in WRITERS:
             raise click.UsageError('I implicitely deduced that you want to '
                                    'use the %s writer. Unfortunately, this '
                                    'writer is not supported. The available '
-                                   'writers are:\n%s' % (ext_f,
+                                   'writers are:\n%s' % (ext_t,
                                                          ', '.join(WRITERS))
                                    )
         t = ext_t
 
-    click.echo(ext_f)
+    dump = WRITERS[t]
+    
+    data = [load(f, fin) for fin in files]
+    data = [x for sub in data for x in sub]
+
+    datastring = dump(data)
+    if o:
+        o.write(datastring)
+    else:
+        click.echo(datastring)
 
 
 if __name__ == '__main__':
