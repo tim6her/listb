@@ -188,20 +188,3 @@ def crawl(url):
 if __name__ == '__main__':
     import doctest
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
-    """
-
-    bib = get_bibtex_from_msn(mrnumbers,
-                              join('files', 'msn.bib'))
-
-    bibliography = bibtex.loads(bib)
-    bib_dict = bibliography.get_entry_dict()
-    for doc in ddocs:
-        bibentry = bib_dict['MR%s' % doc['mrnumber']]
-        doc.update(bibentry)
-        doc.update({'normtitle': norm.norm_title(doc),
-                    'normauthor': norm.norm_authors(doc)})
-    with open(join('files', 'msn.yaml'), 'w') as msn:
-        yaml.dump(ddocs, msn,
-                  default_flow_style=False,
-                  allow_unicode=True)
-    """
