@@ -7,30 +7,14 @@ import yaml
 
 import click
 import bibtexparser
-from bibtexparser.bwriter import BibTexWriter
-from bibtexparser.bibdatabase import BibDatabase
 
 import listb.normalizetex as normalizetex
-
-def _bibtex_dump(data):
-    """ Turns dict into BibTex string
-    
-    Args:
-        data (dict): data to be transformed
-    
-    Returns:
-        str: BibTex representation of dict data
-    """
-    db = BibDatabase()
-    db.entries = data
-    writer = BibTexWriter()
-    indent = '  '
-    return writer.write(db)
+import listb.pybibtools as bibtools
 
 READERS = {'bib': lambda fin: bibtexparser.load(fin).get_entry_list(),
            'yaml': yaml.load
           }
-WRITERS = {'bib': _bibtex_dump,
+WRITERS = {'bib': bibtools.bibtex_dump,
            'yaml': yaml.dump
           }
 
@@ -47,7 +31,7 @@ def load(reader, fil):
     with open(fil, 'r') as fin:
         return READERS[reader](fin)
 
-def _get_formats(f, t, o, files):
+def get_formats(f, t, o, files):
     """ Chooses reader and writer based on user options
     
     Args:
@@ -119,7 +103,7 @@ def cli():
 def append(f, t, o, files):
     """ Concatenates the bibliographies
     """
-    f, t = _get_formats(f, t, o, files)
+    f, t = get_formats(f, t, o, files)
     
     dump = WRITERS[t]
     
@@ -146,7 +130,7 @@ def append(f, t, o, files):
               help='path to file for output')
 @click.argument('files', nargs=-1)
 def merge(f, t, o, files):
-    f, t = _get_formats(f, t, o, files)
+    f, t = get_formats(f, t, o, files)
     
     dump = WRITERS[t]
     

@@ -20,9 +20,9 @@ def latex_to_ascii(tex):
         str: unicode string containing only ascii characters
 
     Examples:
-        >>> latex_to_ascii("\^ile")
+        >>> latex_to_ascii(r"\^ile")
         'ile'
-        >>> latex_to_ascii("\^ile") == latex_to_ascii('île')
+        >>> latex_to_ascii(r"\^ile") == latex_to_ascii('île')
         True
     """
     uni = latex_to_unicode(tex)
@@ -67,9 +67,9 @@ def norm_title(record):
         str: normalized title
 
     Example:
-        >>> norm_title({'title': 'When automorphisms of '
-        ...                      '{$\Cal P(\kappa)/[\kappa]^{<\aleph_0}$} '
-        ...                      'are trivial off a small set'})
+        >>> norm_title({'title': r'When automorphisms of '
+        ...                      r'{$\Cal P(\kappa)/[\kappa]^{<\aleph_0}$} '
+        ...                      r'are trivial off a small set'})
         'whenautomorphismsofaretrivialoffasmallset'
 
     Attributes:
@@ -99,9 +99,9 @@ def make_key(record, *keys):
 
     Example:
         >>> record = dict(author='Siegfried Fischbacher and Uwe Ludwig Horn',
-        ...               title=('When automorphisms of '
-        ...                      '{$\Cal P(\kappa)/[\kappa]^{<\aleph_0}$} '
-        ...                      'are trivial off a small set'),
+        ...               title=(r'When automorphisms of '
+        ...                      r'{$\Cal P(\kappa)/[\kappa]^{<\aleph_0}$} '
+        ...                      r'are trivial off a small set'),
         ...               year='2006')
         >>> record['normauthor'] = norm_authors(record)
         >>> make_key(record, 'normauthor', 'year')
