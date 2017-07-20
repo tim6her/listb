@@ -39,7 +39,7 @@ def get_mrnumber(doc):
 
     Returns:
         str:    MR-number
-    
+
     Attributes:
         PAT (_sre.SRE_Pattern):
             precompiled pattern for extracting the MR-number
@@ -60,7 +60,7 @@ def msn_to_mrnumbers(msn, outfile=None):
 
     Returns:
         List[str]:  List of MR-numbers found on page
-    
+
     Example:
         >>> msn = '''<div class="headlineText">
         ...            <a class="mrnum" title="Full MathSciNet Item"

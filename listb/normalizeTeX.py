@@ -5,13 +5,13 @@
 
 
 import re
+import unicodedata
 
 import bibtexparser.customization as bc
 from bibtexparser.latexenc import latex_to_unicode
-import unicodedata
 
 def latex_to_ascii(tex):
-    """ Transforms LaTeX strings to ascii text ignoring accents
+    r""" Transforms LaTeX strings to ascii text ignoring accents
 
     Args:
         tex (str): LaTeX string
@@ -42,7 +42,7 @@ def norm_authors(record):
     Examples:
         >>> records = [{'author': 'Siegfried Fischbacher and Uwe Ludwig Horn'},
         ...            {'author': 'Fischbacher, S. and Horn, U.'},
-        ...            {'author': 'Fischbacher, Siegfried and Horn, Uwe ' 
+        ...            {'author': 'Fischbacher, Siegfried and Horn, Uwe '
         ...                       'Ludwig'}
         ...           ]
         >>> [norm_authors(rec) for rec in records]
@@ -58,7 +58,7 @@ def norm_authors(record):
     return ' '.join(authors)
 
 def norm_title(record):
-    """ Transforms the title field into a normalized string for matching
+    r""" Transforms the title field into a normalized string for matching
 
     Args:
         record (Dict[str]): record containing a title field
@@ -88,7 +88,7 @@ norm_title.PAT = re.compile(r'\$[\w\W]*?\$')
 norm_title.WS = re.compile(r'\s|\W|_')
 
 def make_key(record, *keys):
-    """ Forms a key from the specified fields of a record
+    r""" Forms a key from the specified fields of a record
 
     Args:
         record (Dict[str]): record containing specified fields

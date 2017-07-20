@@ -10,7 +10,7 @@ from bibtexparser.bwriter import BibTexWriter
 from bibtexparser.bibdatabase import BibDatabase
 
 def bibtex_dump(data):
-    """ Turns dict into BibTex string
+    r""" Turns dict into BibTex string
 
     Args:
         data (List[dict]): data to be transformed
