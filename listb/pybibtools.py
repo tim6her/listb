@@ -48,17 +48,28 @@ def bibtex_dump(data):
     writer = BibTexWriter()
     return writer.write(db)
 
+def bibtex_load_list(handle):
+    """ Loads bibtex data from handle
+
+    Args:
+        handle (handle): file handle of bibliography
+
+    Returns:
+        List[dict]: entry list of bibliography
+    """
+    return bibtexparser.load(handle).get_entry_list()
+
 class Bibliography(object):
     """ Class for handling bibliographic data
     """
 
-    READERS = {'bib': lambda handle: bibtexparser.load(handle).get_entry_list(),
+    READERS = {'bibtex': bibtex_load_list,
                'yaml': yaml.load
               }
     """ Supported readers
     """
 
-    WRITERS = {'bib': bibtex_dump,
+    WRITERS = {'bibtex': bibtex_dump,
                'yaml': yaml.dump
               }
     """ Supported writers
@@ -114,8 +125,64 @@ class Bibliography(object):
         Args:
             handle (handle):        file handle of biblography
             reader (Optional[str]): name of reader
+
+        Example:
+            Assuming that the file 'bib.yaml' exists, one can
+            load its data into a bibliography as follows.
+
+            >>> bib = Bibliography() # doctest: +SKIP
+            >>> with open('bib.yaml', 'r') as handle: # doctest: +SKIP
+            ...     bib.load(handle, reader='yaml')
         """
         self.data = self.READERS[reader](handle)
+
+
+    def union(self, other, keep_left=True):
+        """ Updates `self.data` to the union of the
+        data bases
+
+        Args:
+            other (Bibliography):
+                bibliography to be joined
+            keep_left (Optional[bool]):
+                If both data bases contain the same ID,
+                should the left data base overwrite the
+                right or vice versa? Default: `True`
+
+        Examples:
+            Note how the entry type is overwritten in the second example.
+
+            >>> data1 = [{'ENTRYTYPE': 'article', 'ID': 'test1'},
+            ...          {'ENTRYTYPE': 'article', 'ID': 'test2'}]
+            >>> data2 = [{'ENTRYTYPE': 'book', 'ID': 'test2'},
+            ...         {'ENTRYTYPE': 'article', 'ID': 'test3'}]
+            >>> data3 = [{'ENTRYTYPE': 'misc', 'ID': 'test2'}]
+            >>> bib1 = Bibliography(data1)
+            >>> bib2 = Bibliography(data2)
+            >>> bib3 = Bibliography(data3)
+            >>> bib1.union(bib2)
+            >>> bib1.data
+            [{'ENTRYTYPE': 'article', 'ID': 'test2'}, {'ENTRYTYPE': 'article', 'ID': 'test3'}, {'ENTRYTYPE': 'article', 'ID': 'test1'}]
+            >>> bib1.union(bib3, keep_left=False)
+            >>> bib1.data
+            [{'ENTRYTYPE': 'misc', 'ID': 'test2'}, {'ENTRYTYPE': 'article', 'ID': 'test3'}, {'ENTRYTYPE': 'article', 'ID': 'test1'}]
+        """
+        if keep_left:
+            data = other.data
+            new_data = self.data
+        else:
+            data = self.data
+            new_data = other.data
+
+        old_data = {e['ID']: e for e in data}
+        for entry in new_data:
+            e_id = entry['ID']
+            if entry['ID'] in old_data:
+                old_data[e_id].update(entry)
+            else:
+                old_data[e_id] = entry
+
+        self.data = list(old_data.values())
 
     @staticmethod
     def _test_entry(entry):
@@ -123,3 +190,18 @@ class Bibliography(object):
             return False
 
         return 'ENTRYTYPE' in entry and 'ID' in entry
+
+if __name__ == '__main__':
+    data1 = [{'ENTRYTYPE': 'article', 'ID': 'test1'},
+             {'ENTRYTYPE': 'article', 'ID': 'test2'}]
+    data2 = [{'ENTRYTYPE': 'book', 'ID': 'test2'},
+             {'ENTRYTYPE': 'article', 'ID': 'test3'}]
+    data3 = [{'ENTRYTYPE': 'misc', 'ID': 'test2'}]
+    bib1 = Bibliography(data1)
+    bib2 = Bibliography(data2)
+    bib3 = Bibliography(data3)
+
+    bib1.union(bib2)
+    print(bib1.data)
+    bib1.union(bib3, keep_left=False)
+    print(bib1.data)
