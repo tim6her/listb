@@ -89,6 +89,13 @@ class Bibliography(object):
 
         `data` must be a list of entries, where each entry
         is a `dict` containing the keys "ENTRYTYPE" and "ID".
+        These ID-s must be unique.
+
+        Raises:
+            RuntimeError:
+                if fields are missing or the ID-s are not unique
+            TypeError:
+                if `data` is of incorrect type
 
         Example:
             >>> bib = Bibliography()
@@ -113,6 +120,12 @@ class Bibliography(object):
                                'Either one of your entries is not a '
                                'dictionary or does not contain both '
                                'keys "ENTRYTYPE" and "ID".')
+
+        ids = [e['ID'] for e in data]
+        if len(ids) > len(set(ids)):
+            raise RuntimeError('Your bibliography contains duplicate '
+                               'ID-s.')
+
         self._data = data
 
     @data.deleter
