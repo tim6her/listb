@@ -30,7 +30,7 @@ def latex_to_ascii(tex):
     asc = asc.encode('ascii', 'ignore').decode('utf-8')
     return asc
 
-def norm_authors(record):
+def norm_author(record):
     """ Transforms the author field into an ordered list of last names
 
     Args:
@@ -45,9 +45,9 @@ def norm_authors(record):
         ...            {'author': 'Fischbacher, Siegfried and Horn, Uwe '
         ...                       'Ludwig'}
         ...           ]
-        >>> [norm_authors(rec) for rec in records]
+        >>> [norm_author(rec) for rec in records]
         ['Fischbacher Horn', 'Fischbacher Horn', 'Fischbacher Horn']
-        >>> norm_authors({'author': 'François Augiéras'})
+        >>> norm_author({'author': 'François Augiéras'})
         'Augieras'
     """
     authors = record['author'].split(' and ')
@@ -103,11 +103,11 @@ def make_key(record, *keys):
         ...                      r'{$\Cal P(\kappa)/[\kappa]^{<\aleph_0}$} '
         ...                      r'are trivial off a small set'),
         ...               year='2006')
-        >>> record['normauthor'] = norm_authors(record)
+        >>> record['normauthor'] = norm_author(record)
         >>> make_key(record, 'normauthor', 'year')
         'Fischbacher Horn-2006'
     """
-    return '-'.join([record[key] for key in keys])
+    return '-'.join([record.get(key, '') for key in keys])
 
 if __name__ == '__main__':
     import doctest
