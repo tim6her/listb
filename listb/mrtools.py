@@ -94,7 +94,7 @@ def get_bibtex_from_msn(mrnumbers, outfile=None):
         To use this fuction you need to have access to MathSciNet.
 
     Example:
-        >>> print(get_bibtex_from_msn(['0241312']))
+        >>> print(get_bibtex_from_msn(['0241312'])) # doctest: +SKIP
         @article {MR0241312,
             AUTHOR = {Shelah, Saharon},
              TITLE = {Note on a min-max problem of {L}eo {M}oser},
