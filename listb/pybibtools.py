@@ -145,13 +145,13 @@ class Bibliography(object):
     """ Class for handling bibliographic data
     """
 
-    READERS = {'bibtex': bibtex_load_list,
+    READERS = {'bib': bibtex_load_list,
                'yaml': yaml.load
               }
     """ Supported readers
     """
 
-    WRITERS = {'bibtex': bibtex_dump,
+    WRITERS = {'bib': bibtex_dump,
                'yaml': yaml.dump
               }
     """ Supported writers
@@ -259,7 +259,7 @@ class Bibliography(object):
             ...          "year": "2015",
             ...        }]
             >>> bib = Bibliography(data)
-            >>> print(bib.dump(writer='bibtex'))
+            >>> print(bib.dump(writer='bib'))
             @article{MR3395349,
              author = {Baldwin, John T. and Larson, Paul B. and Shelah,
                        Saharon},

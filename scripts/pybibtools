@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from functools import reduce
 import os.path
 import requests
 import yaml
@@ -11,25 +12,23 @@ import bibtexparser
 import listb.normalizetex as normalizetex
 import listb.pybibtools as bibtools
 
-READERS = {'bib': lambda fin: bibtexparser.load(fin).get_entry_list(),
-           'yaml': yaml.load
-          }
-WRITERS = {'bib': bibtools.bibtex_dump,
-           'yaml': yaml.dump
-          }
+READERS = bibtools.Bibliography.READERS.keys()
+WRITERS = bibtools.Bibliography.WRITERS.keys()
 
 def load(reader, fil):
-    """ Common interface for loading all readers
+    """ Common interface for loading with all readers
     
     Args:
         reader (str):   name of reader
         fil (str):      path to input file
     
     Returns:
-        (dict): dictionary holding data of input file
+        (Bibliography): :class:`Bibliography`-object
     """
-    with open(fil, 'r') as fin:
-        return READERS[reader](fin)
+    bib = bibtools.Bibliography()
+    with open(fil, 'r') as handle:
+        bib.load(handle, reader=reader)
+    return bib
 
 def get_formats(f, t, o, files):
     """ Chooses reader and writer based on user options
@@ -88,30 +87,34 @@ def cli():
     """
     pass
 
-@click.command('append',
-               short_help='append multiple databases')
+@click.command('union',
+               short_help='creates the union of multiple databases')
 @click.option('-f',
-              type=click.Choice(READERS.keys()),
+              type=click.Choice(READERS),
               help='from file format')
 @click.option('-t',
-              type=click.Choice(WRITERS.keys()),
+              type=click.Choice(WRITERS),
               help='to file format')
 @click.option('-o',
               type=click.File('w'),
               help='path to file for output')
-@click.argument('files', nargs=-1)
-def append(f, t, o, files):
-    """ Concatenates the bibliographies
+@click.argument('files', nargs=-1,
+                type=click.Path(exists=True))
+def union(f, t, o, files):
+    """ Creates the union of multiple bibliograhpies
+    
+    If some IDs/cite keys are contained in both bibliographies data from the
+    left bibliography overwrites data from the right one.
     """
     f, t = get_formats(f, t, o, files)
-    
-    dump = WRITERS[t]
-    
-    data = [load(f, fin) for fin in files]
-    
-    data = [x for sub in data for x in sub]
 
-    datastring = dump(data)
+    with click.progressbar(files, label='Loading bibliographies') as ff:
+        bibs = [load(f, fin) for fin in ff]
+    
+    with click.progressbar(bibs, label='Union bibliographies') as bb:
+        bib = reduce(bibtools.Bibliography.union, bb)
+
+    datastring = bib.dump(writer=t)
     if o:
         o.write(datastring)
     else:
@@ -120,26 +123,69 @@ def append(f, t, o, files):
 @click.command('merge',
                short_help='merge databases')
 @click.option('-f',
-              type=click.Choice(READERS.keys()),
+              type=click.Choice(READERS),
               help='from file format')
 @click.option('-t',
-              type=click.Choice(WRITERS.keys()),
+              type=click.Choice(WRITERS),
               help='to file format')
 @click.option('-o',
               type=click.File('w'),
               help='path to file for output')
-@click.argument('files', nargs=-1)
+@click.argument('files', nargs=-1,
+                type=click.Path(exists=True))
 def merge(f, t, o, files):
-    f, t = get_formats(f, t, o, files)
+    """ Merges multiple bibliographies
     
-    dump = WRITERS[t]
-    
-    data = [load(f, fin) for fin in files]
-    
+    TODO: implement a usefull version of `merge`
+    """
     pass
+    
 
-cli.add_command(append)
+@click.command('make-key',
+               short_help='create merge key')
+@click.option('-f',
+              type=click.Choice(READERS),
+              help='from file format')
+@click.option('-t',
+              type=click.Choice(WRITERS),
+              help='to file format')
+@click.option('-o',
+              type=click.File('w'),
+              help='path to file for output')
+@click.option('-k',
+              type=click.STRING,
+              multiple=True,
+              help='name of field for key creation')
+@click.argument('fil', nargs=1, metavar='FILE',
+                type=click.Path(exists=True))
+def make_key(k, f, t, o, fil):
+    """ Adds a merge key to your database
+    """
+    f, t = get_formats(f, t, o, [fil])
+
+    bib = load(f, fil)
+
+    if 'normauthor' in k:
+        bib.add_fields(normauthor=normalizetex.norm_author)
+    if 'normtitle' in k:
+        bib.add_fields(normtitle=normalizetex.norm_title)
+
+    bib.make_key(*k)
+
+    if 'normauthor' in k:
+        bib.del_fields('normauthor')
+    if 'normtitle' in k:
+        bib.del_fields('normtitle')
+
+    datastring = bib.dump(writer=t)
+    if o:
+        o.write(datastring)
+    else:
+        click.echo(datastring)
+
+cli.add_command(union)
 cli.add_command(merge)
+cli.add_command(make_key)
 
 if __name__ == '__main__':
     cli()

@@ -41,7 +41,7 @@ class TestPybibtools(unittest.TestCase):
 
         bib = Bibliography()
         with io.StringIO(s_bibtex) as handle:
-            bib.load(handle, reader='bibtex')
+            bib.load(handle, reader='bib')
     
         asserted_data = [{'ENTRYTYPE': 'article',
                           'ID': 'MR3523657',
