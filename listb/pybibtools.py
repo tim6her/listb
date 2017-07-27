@@ -217,12 +217,13 @@ class Bibliography(object):
     @data.deleter
     def data(self):
         del self._data
+
     def load(self, handle, reader='yaml'):
         """ Loads bibliography from handle
 
         Args:
             handle (handle):        file handle of biblography
-            reader (Optional[str]): name of reader
+            reader (Optional[str]): name of reader (see :const:`READERS`)
 
         Example:
             Assuming that the file 'bib.yaml' exists, one can
@@ -232,6 +233,45 @@ class Bibliography(object):
             ...     bib.load(handle, reader='yaml')
         """
         self.data = self.READERS[reader](handle)
+
+    def dump(self, writer='yaml'):
+        """ Serializes :attr:`data` using one of the predefinded writers
+        in :const:`WRITERS`
+
+        Args:
+            writer (Optional[str]): name of one of the predefined writers
+
+        Returns:
+            str: representation of :attr:`data` as a string.
+
+        Example:
+            >>> data = [{"ENTRYTYPE": "article",
+            ...          "ID": "MR3395349",
+            ...          "author":
+            ...             ("Baldwin, John T. and "
+            ...              "Larson, Paul B. and "
+            ...              "Shelah, Saharon"),
+            ...          "journal": "J. Symb. Log.",
+            ...          "number": "3",
+            ...          "pages": "763--784",
+            ...          "title": r"Almost {G}alois {$\omega$}-stable classes",
+            ...          "volume": "80",
+            ...          "year": "2015",
+            ...        }]
+            >>> bib = Bibliography(data)
+            >>> print(bib.dump(writer='bibtex'))
+            @article{MR3395349,
+             author = {Baldwin, John T. and Larson, Paul B. and Shelah,
+                       Saharon},
+             journal = {J. Symb. Log.},
+             number = {3},
+             pages = {763--784},
+             title = {Almost {G}alois {$\omega$}-stable classes},
+             volume = {80},
+             year = {2015}
+            }
+        """
+        return self.WRITERS[writer](self.data)
 
     def __iter__(self):
          return self.data.__iter__()
