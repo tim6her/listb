@@ -1,8 +1,5 @@
-mrtools
-=======
+mrtools.py
+==========
 
-This package contains several command line scripts
-
-.. todo::
-
-  Describe the command line script
+.. automodule:: scripts.mrtools
+   :members:
