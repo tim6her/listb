@@ -466,8 +466,8 @@ class Bibliography(object):
             >>> bib.make_key('year')
             Traceback (most recent call last):
               ...
-            RuntimeError: The following merge keys are duplicates: ['1981',
-            '1981']
+            RuntimeError: The following merge keys (key, ID)are duplicates:
+            [('1981', 'MR645920'), ('1981', 'MR636904')]
             >>> bib.make_key('author', 'year')
             >>> [e['KEY'] for e in bib]
             ['Sageev, G. and Shelah, S.-1981', 'Shelah, Saharon-1981']
@@ -475,10 +475,11 @@ class Bibliography(object):
         func = lambda r: listb.normalizetex.make_key(r, *keys)
         self.add_fields(**{self.MERGEKEY: func})
         keys = [e[self.MERGEKEY] for e in self]
-        duplicates = [k for k in keys if keys.count(k) > 1]
+        ids = [e['ID'] for e in self]
+        duplicates = [(k, i) for k, i in zip(keys, ids) if keys.count(k) > 1]
 
         if duplicates:
-            raise RuntimeError('The following merge keys '
+            raise RuntimeError('The following merge keys (key, ID)'
                                'are duplicates: %s' % duplicates)
 
     @staticmethod
