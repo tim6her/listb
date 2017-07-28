@@ -56,22 +56,27 @@ the field "url" from the second database is present.
     >>> bib1.data[0]['normtitle']
     'weakcompactnessandthestructure'
     >>> # Let's merge these bibliographies
-    >>> m1 = bib1.merge(bib2, 'normauthor', 'year', 'normtitle')
+    >>> bib1.make_key('normauthor', 'year', 'normtitle')
+    >>> bib2.make_key('normauthor', 'year', 'normtitle')
+    >>> m1 = bib1.merge(bib2, keep_key=True)
     >>> m1.data
-    [{'year': '1981', 'title': 'Weak compactness and the structure',
-    'author': 'Sageev, G. and Shelah, S.', 'ENTRYTYPE': 'incollection',
-    'ID': 'MR645920', 'normauthor': 'Sageev Shelah',
-    'normtitle': 'weakcompactnessandthestructure'},
-    {'year': '1981', 'title': 'Iterated forcing and changing cofinalities',
-    'author': 'Shelah, Saharon', 'url': 'http://dx.doi.org/10.1090/proc/13163',
-    'ENTRYTYPE': 'article', 'ID': 'MR636904', 'normauthor': 'Shelah',
-    'normtitle': 'iteratedforcingandchangingcofinalities'},
-    {'year': '2016',  'title': 'Rigidity of continuous quotients',
-    'author': 'Shelah, Saharon', 'ENTRYTYPE': 'article', 'ID': 'shelah2016',
-    'normauthor': 'Shelah', 'normtitle': 'rigidityofcontinuousquotients'}]
+    [{'year': '1981', 'title': 'Weak compactness and the structure', 'author':
+    'Sageev, G. and Shelah, S.', 'ENTRYTYPE': 'incollection', 'ID': 'MR645920',
+    'normauthor': 'Sageev Shelah', 'normtitle':
+    'weakcompactnessandthestructure', 'KEY': 'Sageev
+    Shelah-1981-weakcompactnessandthestructure'}, {'year': '1981', 'title':
+    'Iterated forcing and changing cofinalities', 'author': 'Shelah, Saharon',
+    'url': 'http://dx.doi.org/10.1090/proc/13163', 'ENTRYTYPE': 'article',
+    'ID': 'MR636904', 'normauthor': 'Shelah', 'normtitle':
+    'iteratedforcingandchangingcofinalities', 'KEY':
+    'Shelah-1981-iteratedforcingandchangingcofinalities'}, {'year': '2016',
+    'title': 'Rigidity of continuous quotients', 'author': 'Shelah, Saharon',
+    'ENTRYTYPE': 'article', 'ID': 'shelah2016', 'normauthor': 'Shelah',
+    'normtitle': 'rigidityofcontinuousquotients', 'KEY':
+    'Shelah-2016-rigidityofcontinuousquotients'}]
     >>> # Now we only want to update the first bibliography and
     >>> # ignore all other entries
-    >>> m2 = bib1.merge(bib2, 'normauthor', 'year', 'normtitle', union=False)
+    >>> m2 = bib1.merge(bib2, union=False)
     >>> m2.data
     [{'year': '1981', 'title': 'Weak compactness and the structure',
     'author': 'Sageev, G. and Shelah, S.', 'ENTRYTYPE': 'incollection',
@@ -312,38 +317,29 @@ class Bibliography(object):
             >>> uni.data == bib2.union(bib1).data
             False
         """
-        return self.merge(other, 'ID', union=True)
+        self.make_key('ID')
+        other.make_key('ID')
+        return self.merge(other, union=True)
 
-    def merge(self, other, *keys, **kargs):
-        """ Merges two bibliographies using a merge key
-
-        The merge key is made up of the keys specified in the
-        argument ``keys`` and a new field called 'KEY' is added to each
-        entry of the bibliography. If the merge key is not unique a
-        ``RuntimeError`` is raised (see :func:`make_key`).
+    def merge(self, other, union=True, keep_key=False):
+        """ Merges two bibliographies using the merge key in field
+        :attr:`MERGEKEY`
 
         Args:
             other (Bibliography):
                 The bibliography to be merged
-            keys (List[str]):
-                Names of the fields to be used to create the merge
-                key
             union (Optional[bool]):
                 Do you want the new database to contain the union
                 of the keys? Otherwise only the entries of the left 
                 bibliography will be updated and entries not contained
                 in it will be ignored. Defaults to ``True``
-                
-                For syntactical reasons this parameter is implemented
-                as keyword arguments (``**kargs``).
+            keep_key (Optional[bool]):
+                Do you want to keep the merge key? Defaults to ``False``
 
         Returns:
             Bibliography:
                 Bibliography containing the merged dataset
         """
-        union = kargs.get('union', True)
-        self.make_key(*keys)
-        other.make_key(*keys)
         self_by_key = {e[self.MERGEKEY]: e for e in self}
         other_by_key = {e[self.MERGEKEY]: e for e in other}
         joined = copy.deepcopy(self_by_key)
@@ -359,7 +355,10 @@ class Bibliography(object):
                 entry.update(self_by_key[key])
 
         bib = Bibliography(list(joined.values()))
-        bib.del_fields(self.MERGEKEY)
+
+        if not keep_key:
+            bib.del_fields(self.MERGEKEY)
+
         return bib
 
     def add_fields(self, **kargs):
