@@ -6,10 +6,17 @@
 Welcome to listb's documentation!
 =================================
 
-Contents:
----------
+Howtos
+======
 
-Scripts:
+.. toctree::
+   :maxdepth: 2
+   :glob:
+   
+   howtos/*
+
+Scripts
+=======
 
 .. toctree::
    :maxdepth: 2
@@ -17,7 +24,8 @@ Scripts:
    
    scripts/*
 
-Modules:
+Modules
+=======
 
 .. toctree::
    :maxdepth: 2
