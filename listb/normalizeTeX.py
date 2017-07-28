@@ -5,6 +5,7 @@
 
 
 import re
+import string
 import unicodedata
 
 import bibtexparser.customization as bc
@@ -24,11 +25,36 @@ def latex_to_ascii(tex):
         'ile'
         >>> latex_to_ascii(r"\^ile") == latex_to_ascii('île')
         True
+        >>> latex_to_ascii(r"Bartoszy\'nski Ros\l anowski")
+        'Bartoszynski Rosl anowski'
     """
+    for pat, sub in latex_to_ascii.dict.items():
+        tex = tex.replace(pat, sub)
+
     uni = latex_to_unicode(tex)
     asc = unicodedata.normalize('NFD', uni)
     asc = asc.encode('ascii', 'ignore').decode('utf-8')
     return asc
+latex_to_ascii.dict = {"\\'": '',
+                       "\\l": 'l',
+                       "\\`": '',
+                       "\\^": '',
+                       "\\H": '',
+                       "\\~": '',
+                       "\\c": '',
+                       "\\k": '',
+                       "\\=": '',
+                       "\\b": '',
+                       "\\.": '',
+                       "\\d": '',
+                       "\\r": '',
+                       "\\aa": 'å',
+                       "\\u": '',
+                       "\\v": '',
+                       "\\t": '',
+                       "\\o": 'ø',
+                       "\\ss": 'ß'
+                      }
 
 def norm_author(record):
     """ Transforms the author field into an ordered list of last names
@@ -49,8 +75,9 @@ def norm_author(record):
         ['Fischbacher Horn', 'Fischbacher Horn', 'Fischbacher Horn']
         >>> norm_author({'author': 'François Augiéras'})
         'Augieras'
-        >>> norm_author({'author': 'Avraham (Abraham), Uri'})
-        'Avraham'
+        >>> norm_author({'author': 'Avraham (Abraham), Uri and '
+        ...              'Ihoda (Haim Judah), Jaime'})
+        'Avraham Ihoda'
     """
     authors = record['author'].split(' and ')
     authors = bc.getnames(authors) # Correct "Name, Surname"-format
@@ -66,7 +93,7 @@ def _norm_author(author):
     author = _norm_author.WS.sub('', author)
     return author
 _norm_author.WS = re.compile(r'\s|\W|_')
-_norm_author.PAT = re.compile(r'\s*\(\w*\)\s*')
+_norm_author.PAT = re.compile(r'\s*\(.*?\)\s*')
 
 def norm_title(record):
     r""" Transforms the title field into a normalized string for matching
