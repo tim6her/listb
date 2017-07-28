@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+""" Small command line tools for manipulating bibliographies.
+"""
+
 
 from functools import reduce
 import os.path
@@ -111,7 +114,7 @@ def union(f, t, o, files):
     with click.progressbar(files, label='Loading bibliographies') as ff:
         bibs = [load(f, fin) for fin in ff]
     
-    with click.progressbar(bibs, label='Union bibliographies') as bb:
+    with click.progressbar(bibs, label='Unioning bibliographies') as bb:
         bib = reduce(bibtools.Bibliography.union, bb)
 
     datastring = bib.dump(writer=t)
@@ -131,14 +134,32 @@ def union(f, t, o, files):
 @click.option('-o',
               type=click.File('w'),
               help='path to file for output')
+@click.option('--union/--left',
+              default=True,
+              help=('Do you want the union of entries or '
+                    'just update the left-most bibliography?'))
+@click.option('--keep-key/--del-key',
+              default=False,
+              help='Do you want to keep the merge key?')
 @click.argument('files', nargs=-1,
                 type=click.Path(exists=True))
-def merge(f, t, o, files):
+def merge(f, t, o, union, keep_key, files):
     """ Merges multiple bibliographies
-    
-    TODO: implement a usefull version of `merge`
     """
-    pass
+    f, t = get_formats(f, t, o, files)
+
+    with click.progressbar(files, label='Loading bibliographies') as ff:
+        bibs = [load(f, fin) for fin in ff]
+    
+    f = lambda b1, b2 : b1.merge(b2, union=union, keep_key=keep_key)
+    with click.progressbar(bibs, label='Merging bibliographies') as bb:
+        bib = reduce(f, bb)
+
+    datastring = bib.dump(writer=t)
+    if o:
+        o.write(datastring)
+    else:
+        click.echo(datastring)
     
 
 @click.command('make-key',
