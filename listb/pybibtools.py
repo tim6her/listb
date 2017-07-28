@@ -144,7 +144,15 @@ def bibtex_load_list(handle):
     Returns:
         List[dict]: entry list of bibliography
     """
-    return bibtexparser.load(handle).get_entry_list()
+    entry_list = bibtexparser.load(handle).get_entry_list()
+
+    for entry in entry_list:
+        if Bibliography.MERGEKEY.lower() in entry:
+            key = entry[Bibliography.MERGEKEY.lower()]
+            del entry[Bibliography.MERGEKEY.lower()]
+            entry[Bibliography.MERGEKEY] = key
+
+    return entry_list
 
 class Bibliography(object):
     """ Class for handling bibliographic data
