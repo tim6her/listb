@@ -49,13 +49,20 @@ def norm_author(record):
         ['Fischbacher Horn', 'Fischbacher Horn', 'Fischbacher Horn']
         >>> norm_author({'author': 'François Augiéras'})
         'Augieras'
+        >>> norm_author({'author': 'Avraham (Abraham), Uri'})
+        'Avraham'
     """
     authors = record['author'].split(' and ')
     authors = bc.getnames(authors) # Correct "Name, Surname"-format
     authors = [a.split(',')[0] for a in authors]
-    authors = list(map(latex_to_ascii, authors))
+    authors = map(latex_to_ascii, authors)
+    authors = list(map(_del_author_variant, authors))
     authors.sort()
     return ' '.join(authors)
+
+def _del_author_variant(author):
+    return _del_author_variant.PAT.sub('', author)
+_del_author_variant.PAT = re.compile(r'\s*\(\w*\)\s*')
 
 def norm_title(record):
     r""" Transforms the title field into a normalized string for matching
