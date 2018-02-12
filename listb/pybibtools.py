@@ -49,10 +49,10 @@ the field "url" from the second database is present.
     'title': 'Iterated forcing and changing cofinalities',
     'author': 'Shelah, Saharon', 'ENTRYTYPE': 'article', 'ID': 'MR636904'}]
     >>> # Creating normalized authors and titles for merging
-    >>> bib1.add_fields(normauthor=listb.normalizetex.norm_author,
-    ...                 normtitle=listb.normalizetex.norm_title)
-    >>> bib2.add_fields(normauthor=listb.normalizetex.norm_author,
-    ...                 normtitle=listb.normalizetex.norm_title)
+    >>> bib1.add_fields(normauthor=normalizetex.norm_author,
+    ...                 normtitle=normalizetex.norm_title)
+    >>> bib2.add_fields(normauthor=normalizetex.norm_author,
+    ...                 normtitle=normalizetex.norm_title)
     >>> bib1.data[0]['normtitle']
     'weakcompactnessandthestructure'
     >>> # Let's merge these bibliographies
@@ -97,16 +97,16 @@ import bibtexparser
 from bibtexparser.bwriter import BibTexWriter
 from bibtexparser.bibdatabase import BibDatabase
 
-import listb.normalizetex
+from . import normalizetex
 
 def bibtex_dump(data):
     r""" Turns dict into BibTex string
     Args:
         data (List[dict]): data to be transformed
-    
+
     Returns:
         str: BibTex representation of dict data
-    
+
     Example:
         >>> data = [{"ENTRYTYPE": "article",
         ...          "ID": "MR3395349",
@@ -196,7 +196,7 @@ class Bibliography(object):
 
         Example:
             The first example raises an error since the argument supplied
-            to ``data`` is not of correct type. The second example 
+            to ``data`` is not of correct type. The second example
             succeeds.
 
             >>> bib = Bibliography()
@@ -338,7 +338,7 @@ class Bibliography(object):
                 The bibliography to be merged
             union (Optional[bool]):
                 Do you want the new database to contain the union
-                of the keys? Otherwise only the entries of the left 
+                of the keys? Otherwise only the entries of the left
                 bibliography will be updated and entries not contained
                 in it will be ignored. Defaults to ``True``
             keep_key (Optional[bool]):
@@ -480,7 +480,7 @@ class Bibliography(object):
             >>> [e['KEY'] for e in bib]
             ['Sageev, G. and Shelah, S.-1981', 'Shelah, Saharon-1981']
         """
-        func = lambda r: listb.normalizetex.make_key(r, *keys)
+        func = lambda r: normalizetex.make_key(r, *keys)
         self.add_fields(**{self.MERGEKEY: func})
         keys = [e[self.MERGEKEY] for e in self]
         ids = [e['ID'] for e in self]
@@ -514,10 +514,10 @@ if __name__ == '__main__':
         bib1.load(bibtex, reader='bibtex')
     with open('files/test2.bib', 'r') as bibtex:
         bib2.load(bibtex, reader='bibtex')
-    bib1.add_fields(normauthor=listb.normalizetex.norm_author,
-                    normtitle=listb.normalizetex.norm_title)
-    bib2.add_fields(normauthor=listb.normalizetex.norm_author,
-                        normtitle=listb.normalizetex.norm_title)
+    bib1.add_fields(normauthor=normalizetex.norm_author,
+                    normtitle=normalizetex.norm_title)
+    bib2.add_fields(normauthor=normalizetex.norm_author,
+                        normtitle=normalizetex.norm_title)
     bib1.merge(bib2, 'normauthor', 'normtitle', 'year', union=False)
     bib1.del_fields('normauthor', 'normtitle')
     with open('files/merge.bib', 'w') as bibtex:
