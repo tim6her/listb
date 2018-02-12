@@ -1,0 +1,28 @@
+\select@language {english}
+\contentsline {chapter}{\numberline {1}Howtos}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}Getting the data}{1}{section.1.1}
+\contentsline {chapter}{\numberline {2}Scripts}{3}{chapter.2}
+\contentsline {section}{\numberline {2.1}mrtools.py}{3}{section.2.1}
+\contentsline {paragraph}{Example}{3}{paragraph*.4}
+\contentsline {section}{\numberline {2.2}pybibtools.py}{3}{section.2.2}
+\contentsline {chapter}{\numberline {3}Modules}{5}{chapter.3}
+\contentsline {section}{\numberline {3.1}mrtools}{5}{section.3.1}
+\contentsline {paragraph}{Example}{5}{paragraph*.9}
+\contentsline {paragraph}{Example}{6}{paragraph*.13}
+\contentsline {section}{\numberline {3.2}normalizetex}{7}{section.3.2}
+\contentsline {paragraph}{Examples}{7}{paragraph*.17}
+\contentsline {paragraph}{Example}{7}{paragraph*.19}
+\contentsline {paragraph}{Examples}{8}{paragraph*.21}
+\contentsline {paragraph}{Example}{8}{paragraph*.23}
+\contentsline {section}{\numberline {3.3}pybibtools}{8}{section.3.3}
+\contentsline {paragraph}{Example}{10}{paragraph*.31}
+\contentsline {paragraph}{Example}{11}{paragraph*.33}
+\contentsline {paragraph}{Example}{11}{paragraph*.35}
+\contentsline {paragraph}{Example}{12}{paragraph*.37}
+\contentsline {paragraph}{Example}{12}{paragraph*.39}
+\contentsline {paragraph}{Example}{12}{paragraph*.41}
+\contentsline {paragraph}{Example}{13}{paragraph*.44}
+\contentsline {paragraph}{Example}{14}{paragraph*.46}
+\contentsline {chapter}{\numberline {4}Indices and tables}{15}{chapter.4}
+\contentsline {chapter}{Python Module Index}{17}{section*.48}
+\contentsline {chapter}{Index}{19}{section*.49}

@@ -1,0 +1,80 @@
+\begin{theindex}
+\def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
+
+  \bigletter A
+  \item add\_fields() (listb.pybibtools.Bibliography method), \hyperpage{10}
+
+  \indexspace
+  \bigletter B
+  \item Bibliography (class in listb.pybibtools), \hyperpage{10}
+  \item bibtex\_dump() (in module listb.pybibtools), \hyperpage{14}
+  \item bibtex\_load\_list() (in module listb.pybibtools), \hyperpage{14}
+
+  \indexspace
+  \bigletter C
+  \item chunk\_list() (in module scripts.mrtools), \hyperpage{3}
+  \item crawl() (in module listb.mrtools), \hyperpage{5}
+
+  \indexspace
+  \bigletter D
+  \item data (listb.pybibtools.Bibliography attribute), \hyperpage{10}
+  \item del\_fields() (listb.pybibtools.Bibliography method), \hyperpage{11}
+  \item dump() (listb.pybibtools.Bibliography method), \hyperpage{11}
+
+  \indexspace
+  \bigletter G
+  \item get\_bibtex\_from\_msn() (in module listb.mrtools), \hyperpage{5}
+  \item get\_formats() (in module scripts.pybibtools), \hyperpage{3}
+  \item get\_mrnumber() (in module listb.mrtools), \hyperpage{6}
+
+  \indexspace
+  \bigletter L
+  \item latex\_to\_ascii() (in module listb.normalizetex), \hyperpage{7}
+  \item listb.mrtools (module), \hyperpage{5}
+  \item listb.normalizetex (module), \hyperpage{7}
+  \item listb.pybibtools (module), \hyperpage{8}
+  \item load() (in module scripts.pybibtools), \hyperpage{3}
+  \item load() (listb.pybibtools.Bibliography method), \hyperpage{12}
+
+  \indexspace
+  \bigletter M
+  \item make\_key() (in module listb.normalizetex), \hyperpage{7}
+  \item make\_key() (listb.pybibtools.Bibliography method), \hyperpage{12}
+  \item merge() (listb.pybibtools.Bibliography method), \hyperpage{13}
+  \item MERGEKEY (listb.pybibtools.Bibliography attribute), \hyperpage{10}
+  \item msn\_to\_mrnumbers() (in module listb.mrtools), \hyperpage{6}
+
+  \indexspace
+  \bigletter N
+  \item norm\_author() (in module listb.normalizetex), \hyperpage{7}
+  \item norm\_title() (in module listb.normalizetex), \hyperpage{8}
+
+  \indexspace
+  \bigletter P
+  \item PAT (in module listb.mrtools), \hyperpage{6}
+  \item PAT (in module listb.normalizetex), \hyperpage{8}
+
+  \indexspace
+  \bigletter R
+  \item READERS (listb.pybibtools.Bibliography attribute), \hyperpage{10}
+
+  \indexspace
+  \bigletter S
+  \item scripts.mrtools (module), \hyperpage{3}
+  \item scripts.pybibtools (module), \hyperpage{3}
+
+  \indexspace
+  \bigletter U
+  \item union() (listb.pybibtools.Bibliography method), \hyperpage{13}
+
+  \indexspace
+  \bigletter W
+  \item WRITERS (listb.pybibtools.Bibliography attribute), \hyperpage{10}
+  \item WS (in module listb.normalizetex), \hyperpage{8}
+
+  \indexspace
+  \bigletter Y
+  \item yaml\_dump() (in module listb.mrtools), \hyperpage{6}
+  \item yaml\_dumps() (in module listb.mrtools), \hyperpage{6}
+
+\end{theindex}

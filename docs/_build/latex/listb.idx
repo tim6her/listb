@@ -1,0 +1,35 @@
+\indexentry{scripts.mrtools (module)|hyperpage}{3}
+\indexentry{chunk\_list() (in module scripts.mrtools)|hyperpage}{3}
+\indexentry{scripts.pybibtools (module)|hyperpage}{3}
+\indexentry{get\_formats() (in module scripts.pybibtools)|hyperpage}{3}
+\indexentry{load() (in module scripts.pybibtools)|hyperpage}{3}
+\indexentry{listb.mrtools (module)|hyperpage}{5}
+\indexentry{crawl() (in module listb.mrtools)|hyperpage}{5}
+\indexentry{get\_bibtex\_from\_msn() (in module listb.mrtools)|hyperpage}{5}
+\indexentry{get\_mrnumber() (in module listb.mrtools)|hyperpage}{6}
+\indexentry{PAT (in module listb.mrtools)|hyperpage}{6}
+\indexentry{msn\_to\_mrnumbers() (in module listb.mrtools)|hyperpage}{6}
+\indexentry{yaml\_dump() (in module listb.mrtools)|hyperpage}{6}
+\indexentry{yaml\_dumps() (in module listb.mrtools)|hyperpage}{6}
+\indexentry{listb.normalizetex (module)|hyperpage}{7}
+\indexentry{latex\_to\_ascii() (in module listb.normalizetex)|hyperpage}{7}
+\indexentry{make\_key() (in module listb.normalizetex)|hyperpage}{7}
+\indexentry{norm\_author() (in module listb.normalizetex)|hyperpage}{7}
+\indexentry{norm\_title() (in module listb.normalizetex)|hyperpage}{8}
+\indexentry{PAT (in module listb.normalizetex)|hyperpage}{8}
+\indexentry{WS (in module listb.normalizetex)|hyperpage}{8}
+\indexentry{listb.pybibtools (module)|hyperpage}{8}
+\indexentry{Bibliography (class in listb.pybibtools)|hyperpage}{10}
+\indexentry{MERGEKEY (listb.pybibtools.Bibliography attribute)|hyperpage}{10}
+\indexentry{READERS (listb.pybibtools.Bibliography attribute)|hyperpage}{10}
+\indexentry{WRITERS (listb.pybibtools.Bibliography attribute)|hyperpage}{10}
+\indexentry{add\_fields() (listb.pybibtools.Bibliography method)|hyperpage}{10}
+\indexentry{data (listb.pybibtools.Bibliography attribute)|hyperpage}{10}
+\indexentry{del\_fields() (listb.pybibtools.Bibliography method)|hyperpage}{11}
+\indexentry{dump() (listb.pybibtools.Bibliography method)|hyperpage}{11}
+\indexentry{load() (listb.pybibtools.Bibliography method)|hyperpage}{12}
+\indexentry{make\_key() (listb.pybibtools.Bibliography method)|hyperpage}{12}
+\indexentry{merge() (listb.pybibtools.Bibliography method)|hyperpage}{13}
+\indexentry{union() (listb.pybibtools.Bibliography method)|hyperpage}{13}
+\indexentry{bibtex\_dump() (in module listb.pybibtools)|hyperpage}{14}
+\indexentry{bibtex\_load\_list() (in module listb.pybibtools)|hyperpage}{14}
