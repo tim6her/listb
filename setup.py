@@ -5,10 +5,6 @@ def readme():
     with open('README.rst') as f:
         return f.read()
 
-def requirements():
-    with open('requirements.txt') as f:
-        return f.read()
-
 setup(name='listb',
       version='0.0',
       description='Tools for listb and MathSciNet',
@@ -17,7 +13,6 @@ setup(name='listb',
       author='Tim B. Herbstrith',
       license='MIT',
       packages=['listb'],
-      install_requires=requirements(),
       scripts=[join('scripts', 'mrtools.py'),
                join('scripts', 'pybibtools.py')],
       test_suite='nose.collector',

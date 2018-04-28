@@ -1,4 +1,5 @@
 click>=2.0
-bibtexparser
 bs4
 pyyaml
+requests
+-e  git+https://github.com/tim6her/python-bibtexparser#egg=python-bibtexparser
